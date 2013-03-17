@@ -1,6 +1,8 @@
 import junit.framework.TestCase;
 
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Created with IntelliJ IDEA.
@@ -10,6 +12,10 @@ import java.util.*;
  * To change this template use File | Settings | File Templates.
  */
 public class Test1 extends TestCase{
+
+    private String logDir = "/home/chris/IdeaProjects/java/TestJava/tests";
+    private String logNaam = "test.log";
+    static Logger log = null;
 
     Map<String, String> map = null;
 
@@ -27,6 +33,14 @@ public class Test1 extends TestCase{
 
     @org.junit.Before
     public void setUp() throws Exception {
+        try {
+            MijnLog mijnlog = new MijnLog(logDir, logNaam);
+            log = mijnlog.getLog();
+            log.setLevel(Level.INFO);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
         map = new HashMap<String, String>();
         map.put("aap", "zoogdier");
         map.put("paard", "zoogdier");
@@ -90,18 +104,20 @@ public class Test1 extends TestCase{
             System.out.printf("\t%s -> %s\n", key, sorted.get(key));
         }
 
+        System.out.println("dieren:");
         List<Dier> dieren = Dier.getInstances();
         for (Dier dier: dieren) {
-            System.out.printf("naam: %s, soort: %s\n", dier.getNaam(), dier.getSoort());
+            System.out.printf("\tnaam: %s, soort: %s\n", dier.getNaam(), dier.getSoort());
         }
         aap.destroy();
         Dier aap = null;
         koe.destroy();
         Dier koe = null;
 
+        System.out.println("dieren zonder aap en koe:");
         dieren = Dier.getInstances();
         for (Dier dier: dieren) {
-            System.out.printf("naam: %s, soort: %s\n", dier.getNaam(), dier.getSoort());
+            System.out.printf("\tnaam: %s, soort: %s\n", dier.getNaam(), dier.getSoort());
         }
 
 

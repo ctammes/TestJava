@@ -16,7 +16,15 @@ public class MijnLog {
     private String logNaam;
     private Logger log = null;
 
-    public MijnLog(String logdir, String logNaam) {
+    public String getLogdir() {
+        return logdir;
+    }
+
+    public String getLogNaam() {
+        return logNaam;
+    }
+
+    public MijnLog(String logdir, String logNaam, boolean append) {
         this.logdir = logdir;
         this.logNaam = logNaam;
 
@@ -24,8 +32,8 @@ public class MijnLog {
             // console handler
             ConsoleHandler cons = new ConsoleHandler();
 
-            // filehandler (logfile)
-            FileHandler hand = new FileHandler(logdir + "/" + logNaam);
+            // filehandler (logfile) - append to log (=true)
+            FileHandler hand = new FileHandler(logdir + "/" + logNaam, append);
 
             // formattering logregel via aangepaste class
             MijnSimpleFormatter formatterTxt = new MijnSimpleFormatter();
@@ -34,7 +42,7 @@ public class MijnLog {
             // cons.setLevel(Level.OFF);    // geen output naar console
 
             log = Logger.getLogger(MijnLog.class.getName());
-            log.setUseParentHandlers(false);
+            log.setUseParentHandlers(false);    // zet default console log uit
             log.addHandler(hand);
             log.addHandler(cons);
         } catch (Exception e) {

@@ -1,5 +1,9 @@
-import junit.framework.TestCase;
+import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
+import java.io.File;
+import java.sql.ResultSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -10,29 +14,78 @@ import java.util.logging.Logger;
  * Time: 11:51
  * To change this template use File | Settings | File Templates.
  */
-public class TestDb extends TestCase {
-    private String dbDir = "/home/chris/IdeaProjects/java/TestJava/tests/TestDb.java";
-    private String dbDb = "test.db";
-    private Sqlite sqlite = null;
+public class TestDb {
+    static String dbDir = "/home/chris/IdeaProjects/java/TestJava/tests";
+    static String dbDb = "test.db";
+    static Sqlite sqlite = null;
 
-    private String logDir = "/home/chris/IdeaProjects/java/TestJava/tests";
-    private String logNaam = "test.log";
+    static String logDir = "/home/chris/IdeaProjects/java/TestJava/tests";
+    static String logNaam = "test.log";
     static Logger log = null;
 
-    @Override
-    public void setUp() throws Exception {
+    @BeforeClass
+    public static void setUp() throws Exception {
+        if (log == null) {
+            try {
+                MijnLog mijnlog = new MijnLog(logDir, logNaam, true);
+                log = mijnlog.getLog();
+                log.setLevel(Level.INFO);
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+        }
+
+        if (sqlite == null) {
+            File db = new File(dbDir + "/" + dbDb);
+            db.delete();
+            sqlite = new Sqlite(dbDir, dbDb, log);
+            try {
+                sqlite.openDb();
+            } catch(Exception e) {
+                log.severe(e.getMessage());
+            }
+        }
+    }
+
+    @Test
+    public void testLog() {
+        log.info("dit is een test");
+    }
+
+    @Test
+    public void testCreate() {
+        String sql = "CREATE TABLE files" +
+                " (id integer primary key autoincrement," +
+                " naam text unique," +
+                " omschrijving text)";
+        Assert.assertTrue("testCreate", sqlite.executeNoResult(sql));
+    }
+
+    @Test
+    public void testInsert() {
+        String sql = "insert into files" +
+                " (naam, omschrijving) " +
+                " values ('naam1', 'omschrijving1')";
         try {
-            MijnLog mijnlog = new MijnLog(logDir, logNaam);
-            log = mijnlog.getLog();
-            log.setLevel(Level.INFO);
-        } catch (Exception e) {
+            Assert.assertTrue("testInsert", sqlite.executeNoResult(sql));
+        } catch(Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    @Test
+    public void testSelect() {
+        String sql = "select * from files";
+        try {
+            ResultSet rs = sqlite.execute(sql);
+            Assert.assertNotNull("testSelect", rs);
+            while (rs.next()) {
+                System.out.println(rs.getString("naam"));
+            }
+
+        } catch(Exception e) {
             System.out.println(e.getMessage());
         }
 
-        sqlite = new Sqlite(dbDir, dbDb, log);
-    }
-
-    public void testLog() {
-        log.info("dit is een test");
     }
 }
