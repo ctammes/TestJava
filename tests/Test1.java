@@ -1,4 +1,5 @@
-import junit.framework.TestCase;
+import nl.ctammes.common.MijnLog;
+import org.junit.Test;
 
 import java.util.*;
 import java.util.logging.Level;
@@ -11,7 +12,7 @@ import java.util.logging.Logger;
  * Time: 18:16
  * To change this template use File | Settings | File Templates.
  */
-public class Test1 extends TestCase{
+public class Test1 {
 
     private String logDir = "/home/chris/IdeaProjects/java/TestJava/tests";
     private String logNaam = "test.log";
@@ -34,7 +35,7 @@ public class Test1 extends TestCase{
     @org.junit.Before
     public void setUp() throws Exception {
         try {
-            MijnLog mijnlog = new MijnLog(logDir, logNaam);
+            MijnLog mijnlog = new MijnLog(logDir, logNaam, true);
             log = mijnlog.getLog();
             log.setLevel(Level.INFO);
         } catch (Exception e) {
@@ -66,6 +67,7 @@ public class Test1 extends TestCase{
 
     }
 
+    @Test
     public void testMap() {
         System.out.println(map.toString());
         System.out.println("Map (for):");

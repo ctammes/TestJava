@@ -1,3 +1,5 @@
+import nl.ctammes.common.MijnLog;
+import nl.ctammes.common.Sqlite;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
